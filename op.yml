@@ -1,0 +1,47 @@
+description: Pings a MariaDB database.
+name: github.com/opspec-pkgs/mariadb.db.waitready
+opspec: 0.1.6
+version: 1.0.0
+inputs:
+  dbUsername:
+    string:
+      constraints: { minLength: 1 }
+      description: username for the MariaDB database
+  dbPassword:
+    string:
+      constraints: { minLength: 1 }
+      isSecret: true
+      description: password for the MariaDB database
+  dbHost:
+    string:
+      constraints: { minLength: 1 }
+      description: hostname for the MariaDB database
+      default: "mariadb"
+  dbPort:
+    number:
+      constraints: { minimum: 0, maximum: 65535 }
+      default: 3306
+      description: port for the MariaDB database
+  dbSchema:
+    string:
+      constraints: { minLength: 0 }
+      description: schema name for the MariaDB database
+  timeout:
+    number:
+      constraints: { minimum: 0 }
+      default: 60
+      description: number of seconds before giving up on waiting for the database to be avaliable
+run:
+  container:
+    image: { ref: 'golang:1.22.0-alpine3.19' }
+    dirs:
+      /app: $(/)
+    envVars:
+      dbUsername:
+      dbPassword:
+      dbHost:
+      dbPort:
+      dbSchema:
+      timeout:
+    cmd: [ 'go', 'run', 'main.go' ]
+    workDir: /app
